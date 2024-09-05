@@ -3,17 +3,17 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const express = require('express');
 const path = require('path');
 require('dotenv').config();
-const cors = require('cors');
 
-// Enable CORS
-app.use(cors());
 // Create a new Discord client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 // Express app setup
 const app = express();
 const PORT = process.env.PORT || 3000;
+const cors = require('cors');
 
+// Enable CORS
+app.use(cors());
 // Serve static files (like index.html)
 app.use(express.static(path.join(__dirname, 'public')));
 
