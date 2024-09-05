@@ -3,7 +3,10 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const express = require('express');
 const path = require('path');
 require('dotenv').config();
+const cors = require('cors');
 
+// Enable CORS
+app.use(cors());
 // Create a new Discord client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -40,6 +43,7 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
-// Login to Discord with your bot token
+
+
 client.login(process.env.TOKEN);
 
