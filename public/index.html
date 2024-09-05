@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Control Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="about.css">
+    <style>
+        body, h1, h2, p, button, input, a {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+        }
+        
+        body {
+            background: #20232a;
+            overflow-x: hidden; 
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        
+        * {
+            box-sizing: border-box; 
+        }
+        
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(44, 44, 62, 0.9);
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+        
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e0e0ff;
+            margin-bottom: 10px;
+        }
+        header nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap; /* Ensure text doesn't overflow on mobile */
+        }
+        
+        header nav ul li {
+            display: inline;
+        }
+        
+        header nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 5px 10px;
+            transition: color 0.3s ease;
+        }
+        
+        header nav ul li a:hover {
+            color: #6a6aa0;
+        }
+        
+        /* Landing Section */
+        .landing-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url('https://media.discordapp.net/attachments/1278660524632047659/1280766358245740544/gradient-bakground-ui.jpg?ex=66d9461f&is=66d7f49f&hm=d885db95e92acac49aeff1bb74cfb95c30ccb84610a2d2903ec1bdbe64d3e807&=&format=webp&width=1160&height=662') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            padding: 60px 20px;
+            color: #ffffff;
+        }
+        
+        .landing-section .landing-content {
+            max-width: 600px;
+        }
+        
+        .landing-section .landing-image {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .landing-section h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .landing-section p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .landing-section .cta-button {
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            background: #575787;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        
+        .landing-section .cta-button:hover {
+            background: #6a6aa0;
+            transform: scale(1.05);
+        }
+        
+        /* Section Styling */
+        section {
+            padding: 60px 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(44, 44, 62, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        
+        section h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #e0e0ff;
+        }
+        
+        /* Bot Info */
+        #bot-info {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(34, 34, 52, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #bot-info:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+        }
+        
+        #bot-info img {
+            border-radius: 50%;
+            border: 4px solid #575787;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+            transition: border-color 0.3s ease;
+        }
+        
+        #bot-info img:hover {
+            border-color: #6a6aa0;
+        }
+        
+        #bot-info h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 10px;
+            color: #e0e0ff;
+        }
+        
+        .bot-info-details {
+            text-align: left;
+            font-size: 16px;
+            margin-top: 20px;
+            color: #c0c0e0;
+        }
+        
+        .bot-info-details p {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+        
+        .bot-info-details p strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        /* Button Group */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-group button {
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background: #575787;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-group button:hover {
+            background: #6a6aa0;
+        }
+        
+        .btn-group button:active {
+            transform: scale(0.98);
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 30, 47, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1000;
+            width: 90%; 
+            max-width: 500px; 
+            box-sizing: border-box;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal h2 {
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .modal input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #2c2c3e;
+            color: #fff;
+        }
+        
+        .modal button {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            background: #575787;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .modal button:hover {
+            background: #6a6aa0;
+        }
+        
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 999;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: rgba(44, 44, 62, 0.9);
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        footer p {
+            font-size: 14px;
+            color: #e0e0ff;
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .btn-group {
+                flex-direction: row;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+        
+            .btn-group button {
+                flex: 1 1 auto;
+            }
+        }
+        @media (max-width: 768px) {
+            header {
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+            }
+        
+            header h1 {
+                font-size: 20px; /* Adjust font size for smaller screens */
+                margin-bottom: 10px;
+            }
+        
+            header nav {
+                display: flex;
+                flex-wrap: wrap; /* Allow wrapping if needed */
+                justify-content: center; /* Center items */
+            }
+        
+            header nav ul {
+                display: flex;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+                justify-content: center; /* Center items */
+                gap: 10px; /* Space between items */
+            }
+        
+            header nav ul li {
+                flex: 1 1 auto; /* Allow items to grow and shrink */
+                text-align: center; /* Center text in each item */
+            }
+        
+            header nav ul li a {
+                font-size: 14px; /* Reduce font size */
+                padding: 5px 8px; /* Adjust padding */
+                display: block; /* Ensure block display for alignment */
+            }
+        }
+        
+        
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        .about-bot {
+            text-align: left;
+            margin: 20px;
+        }
+        .about-bot h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .about-bot p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .about-bot ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        .about-bot li {
+            margin-bottom: 8px;
+        }
+        
+        /* Command Settings Section */
+        #command-settings-section {
+          padding: 20px;
+          background-color:  rgba(30, 30, 47, 0.95);
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          margin-top: 20px;
+        }
+        
+        #command-settings-section h2 {
+          font-size: 24px;
+          margin-bottom: 20px;
+          color: #ffffff;
+          text-align: center;
+        }
+        
+        #command-settings {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 15px;
+        }
+        
+        .command-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 15px;
+          background-color: #575787;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          transition: transform 0.2s ease;
+        }
+        
+        .command-item:hover {
+          transform: translateY(-5px);
+        }
+        
+        .command-item span {
+          font-size: 16px;
+          color: #ffffff;
+        }
+        
+        /* Toggle Switches */
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 50px;
+          height: 25px;
+        }
+        
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+        
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          transition: .4s;
+          border-radius: 25px;
+        }
+        
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 19px;
+          width: 19px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .4s;
+          border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+          background-color: #4CAF50;
+        }
+        
+        input:checked + .slider:before {
+          transform: translateX(24px);
+        }
+        
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+        
+        .slider.round:before {
+          border-radius: 50%;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#bot-info-section">Info</a></li>
+                <li><a href="#bot-edit-section">Edit</a></li>
+                <li><a href="#bot-controls-section">Controls</a></li>
+                <li><a href="#command-settings-section">Commands</a></li>
+                <li><a href="#about-section">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Landing Section -->
+    <section id="home" class="landing-section">
+        <div class="landing-content">
+            <h3>Control Panel</h3>
+            <p>Efficiently manage and customize your bot with our easy-to-use control panel. From adjusting settings to monitoring activity and adding new features, everything you need is right at your fingertips.</p>
+            <a href="#bot-info-section" class="cta-button">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Bot Info Section -->
+    <section id="bot-info-section">
+        <div class="container">
+            <h2>Information</h2>
+            <div id="bot-info">
+                <img src="" alt="Bot Avatar" id="bot-avatar">
+                <h2 id="bot-name">Bot Name</h2>
+                <div class="bot-info-details">
+                    <p id="bot-status"><strong>Status:</strong> Loading...</p>
+                    <p id="bot-activity"><strong>Activity:</strong> Loading...</p>
+                    <p id="bot-servers"><strong>Servers:</strong> Loading...</p>
+                    <p id="bot-members"><strong>Members:</strong> Loading...</p>
+                    <p id="bot-commands"><strong>Commands:</strong> Loading...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bot Edit Section -->
+    <section id="bot-edit-section">
+        <div class="container">
+            <h2>Appearance</h2>
+            <div class="btn-group">
+                <button onclick="openModal('activity')">Change Activity</button>
+                <button onclick="openModal('status')">Edit Status</button>
+                <button onclick="openModal('avatar')">Upload Avatar</button>
+                <button onclick="openModal('banner')">Upload Banner</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bot Controls Section -->
+    <section id="bot-controls-section">
+        <div class="container">
+            <h2>Controls</h2>
+            <div class="btn-group">
+                <button onclick="openModal('kick')">Kick User</button>
+                <button onclick="openModal('timeout')">Timeout User</button>
+                <button onclick="openModal('ban')">Ban User</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Command Settings Section -->
+    <section id="command-settings-section">
+        <div class="container">
+            <h2>Command Settings</h2>
+            <div id="command-settings">
+                <!-- Command toggles will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Bot Section -->
+    <section id="about-section">
+        <div class="container">
+            <h2>About</h2>
+            <div class="about-bot">
+                <p>Welcome to our versatile server bot, designed to enhance your Discord experience with a range of features tailored for both music and moderation! This bot seamlessly integrates into your server to provide:</p>
+                <ul>
+                    <li><strong>Music Playback:</strong> Enjoy high-quality music streaming directly from YouTube, Spotify, and other platforms. Control playback with easy-to-use commands, manage playlists, and queue up your favorite tracks.</li>
+                    <li><strong>Advanced Moderation:</strong> Keep your server safe and organized with powerful moderation tools. Automatically manage spam, enforce server rules, and handle user infractions with customizable settings.</li>
+                    <li><strong>Custom Commands:</strong> Create and manage custom commands to suit your server's unique needs. Tailor responses and automate tasks to enhance server engagement.</li>
+                    <li><strong>Interactive Features:</strong> Engage your community with fun and interactive features, including trivia games, giveaways, and more!</li>
+                </ul>
+                <p>Whether you're running a music-focused server or need robust moderation tools, our bot has you covered. Let us take care of the heavy lifting while you enjoy a smoothly managed and entertaining server experience!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2024 GlaceYT. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    <div class="modal" id="modal">
+        <h2 id="modal-title">Update</h2>
+        <input type="text" id="modal-input-1" placeholder="Input 1" />
+        <input type="text" id="modal-input-2" placeholder="Input 2" style="display: none;" />
+        <button onclick="submitModal()">Submit</button>
+    </div>
+
+    <!-- Script to handle bot actions and command settings -->
+    <script>
+        let currentModalAction = '';
+
+        async function fetchBotStats() {
+            try {
+                const response = await axios.get('http://localhost:3000/api/bot/stats');
+                const data = response.data;
+
+                document.getElementById('bot-avatar').src = data.avatar;
+                document.getElementById('bot-name').textContent = 'Bot Name: ' + data.name || 'Bot Name';
+                document.getElementById('bot-status').textContent = 'Status: ' + data.status;
+                document.getElementById('bot-activity').textContent = 'Activity: ' + data.activity;
+                document.getElementById('bot-servers').textContent = 'Servers: ' + data.servers;
+                document.getElementById('bot-members').textContent = 'Members: ' + data.members;
+                document.getElementById('bot-commands').textContent = 'Commands: ' + data.commands;
+            } catch (error) {
+                console.error('Error fetching bot stats:', error);
+            }
+        }
+
+        async function fetchCommandSettings() {
+            try {
+                const response = await axios.get('http://localhost:3000/api/bot/commands');
+                const settings = response.data;
+
+                const commandSettingsDiv = document.getElementById('command-settings');
+                commandSettingsDiv.innerHTML = ''; // Clear previous content
+
+                for (const [command, enabled] of Object.entries(settings)) {
+                    const commandItem = document.createElement('div');
+                    commandItem.className = 'command-item';
+                    commandItem.innerHTML = `
+                        <span>${command}</span>
+                        <label class="switch">
+                            <input type="checkbox" id="${command}-toggle" ${enabled ? 'checked' : ''} onchange="toggleCommand('${command}', this.checked)">
+                            <span class="slider round"></span>
+                        </label>
+                    `;
+                    commandSettingsDiv.appendChild(commandItem);
+                }
+            } catch (error) {
+                console.error('Error fetching command settings:', error);
+            }
+        }
+
+        function openModal(action) {
+            currentModalAction = action;
+            const modal = document.getElementById('modal');
+            const overlay = document.getElementById('overlay');
+            const title = document.getElementById('modal-title');
+            const input1 = document.getElementById('modal-input-1');
+            const input2 = document.getElementById('modal-input-2');
+
+            input1.value = '';
+            input2.value = '';
+
+            switch (action) {
+                case 'activity':
+                    title.textContent = 'Update Activity';
+                    input1.placeholder = 'Enter new activity name';
+                    input2.placeholder = 'Enter activity type (PLAYING, STREAMING, LISTENING, WATCHING)';
+                    input2.style.display = 'block';
+                    break;
+                case 'status':
+                    title.textContent = 'Update Status';
+                    input1.placeholder = 'Enter new status (online, idle, dnd, invisible)';
+                    input2.style.display = 'none';
+                    break;
+                case 'message':
+                    title.textContent = 'Send Message';
+                    input1.placeholder = 'Enter channel ID';
+                    input2.placeholder = 'Enter message';
+                    input2.style.display = 'block';
+                    break;
+                case 'avatar':
+                    title.textContent = 'Update Avatar';
+                    input1.placeholder = 'Enter new avatar URL';
+                    input2.style.display = 'none';
+                    break;
+                case 'banner':
+                    title.textContent = 'Update Banner';
+                    input1.placeholder = 'Enter new banner URL';
+                    input2.style.display = 'none';
+                    break;
+                case 'kick':
+                    title.textContent = 'Kick User';
+                    input1.placeholder = 'Enter guild ID';
+                    input2.placeholder = 'Enter user ID';
+                    input2.style.display = 'block';
+                    break;
+                case 'timeout':
+                    title.textContent = 'Timeout User';
+                    input1.placeholder = 'Enter guild ID';
+                    input2.placeholder = 'Enter user ID and duration (in ms)';
+                    input2.style.display = 'block';
+                    break;
+                case 'ban':
+                    title.textContent = 'Ban User';
+                    input1.placeholder = 'Enter guild ID';
+                    input2.placeholder = 'Enter user ID';
+                    input2.style.display = 'block';
+                    break;
+            }
+
+            modal.classList.add('active');
+            overlay.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        async function submitModal() {
+            const input1 = document.getElementById('modal-input-1').value;
+            const input2 = document.getElementById('modal-input-2').value;
+
+            try {
+                switch (currentModalAction) {
+                    case 'activity':
+                        await axios.post('http://localhost:3000/api/bot/presence', { activity: { name: input1, type: input2 } });
+                        break;
+                    case 'status':
+                        await axios.post('http://localhost:3000/api/bot/presence', { status: input1 });
+                        break;
+                    case 'message':
+                        await axios.post('http://localhost:3000/api/bot/send-message', { channelId: input1, message: input2 });
+                        break;
+                    case 'avatar':
+                        await axios.post('http://localhost:3000/api/bot/avatar', { avatarUrl: input1 });
+                        break;
+                    case 'banner':
+                        await axios.post('http://localhost:3000/api/bot/banner', { bannerUrl: input1 });
+                        break;
+                    case 'kick':
+                        await axios.post('http://localhost:3000/api/bot/kick-user', { guildId: input1, userId: input2 });
+                        break;
+                    case 'timeout':
+                        const [userId, duration] = input2.split(' ');
+                        await axios.post('http://localhost:3000/api/bot/timeout-user', { guildId: input1, userId, duration: parseInt(duration) });
+                        break;
+                    case 'ban':
+                        await axios.post('http://localhost:3000/api/bot/ban-user', { guildId: input1, userId: input2 });
+                        break;
+                }
+                alert('Action completed!');
+                fetchBotStats();
+            } catch (error) {
+                console.error('Error during submitModal:', error);
+                alert('Failed to complete action. Check console for details.');
+            } finally {
+                closeModal();
+            }
+        }
+
+        async function toggleCommand(command, enabled) {
+            try {
+                await axios.post('http://localhost:3000/api/bot/commands', { command, enabled });
+                alert(`Command ${command} has been ${enabled ? 'enabled' : 'disabled'}`);
+            } catch (error) {
+                console.error(`Error toggling command ${command}:`, error);
+                alert('Failed to update command status');
+            }
+        }
+
+        // Initial fetch of bot stats and command settings
+        fetchBotStats();
+        fetchCommandSettings();
+    </script>
+</body>
+</html>
